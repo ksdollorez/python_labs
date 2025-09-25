@@ -35,12 +35,11 @@ minutes=m%60
 print(str(hours) +':' + str(minutes))  
 ![](images/lab01/ex04.jpg)  
 ### Задание 5
-fio=str(input('ФИО: '))  
+fio=str(input('ФИО: '))    
 name=fio.split()  
-symbols=[new for new in name if new]  
-initials=[word[0].upper() for word in symbols]  
-print('Инициалы: ',''.join(initials)+'.')  
-print('Длина (символов): ',len(' '.join(symbols)))  
-![](images/lab01/ex05.jpg)  
+initials=[word[0].upper() for word in name]  
+print('Инициалы:',''.join(initials)+'.')  
+print('Длина символов: ',len(' '.join(name)))    
+![](images/lab01/ex05.jpg)     
 
 
