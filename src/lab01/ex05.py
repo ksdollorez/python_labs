@@ -1,6 +1,5 @@
 fio=str(input('ФИО: '))
 name=fio.split()
-symbols=[new for new in name if new]
-initials=[word[0].upper() for word in symbols]
+initials=[word[0].upper() for word in name]
 print('Инициалы: ',''.join(initials)+'.')
-print('Длина (символов): ',len(' '.join(symbols)))
+print('Длина (символов): ',len(' '.join(name)))
