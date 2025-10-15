@@ -75,7 +75,8 @@ def flatten(mat: list[list | tuple]) -> list:
     return result  
 print(f"flatten\n[[1, 2], [3, 4]] -> {flatten([[1, 2], [3, 4]])}\n[[1, 2], (3, 4, 5)] -> {flatten([[1, 2], (3, 4, 5)])}\n[[1], [], [2, 3]] -> {flatten([[1], [], [2, 3]])}\n[[[1, 2], 'ab']] -> {flatten([[[1, 2], 'ab']])}")
 ```  
-![](images\lab02\ex01.l2.jpg)
+![](images/lab02/ex01.l2.jpg)
+
 ### Задание №2
 ```Python
 
@@ -111,7 +112,7 @@ def col_sums(mat: list[list[float | int]]) -> list[float]:
 print(f"col_sums\n[[1, 2, 3], [4, 5, 6]] -> {col_sums([[1, 2, 3], [4, 5, 6]])}\n[[-1, 1], [10, -10]] -> {col_sums([[-1, 1], [10, -10]])}\n[[0, 0], [0, 0]] -> {col_sums([[0, 0], [0, 0]])}")  
 print(f"[[1, 2], [3]] -> {col_sums([[1, 2], [3]])}")  
 ```
-![](images\lab02\ex02.l2.jpg)
+![](images/lab02/ex02.l2.jpg)
 ### Задание №3
 ```Python
 
@@ -140,4 +141,4 @@ print("(\"Иванов Иван Иванович\", \"BIVT-25\", 4.6) ->", forma
 print("(\"Петров Пётр\", \"IKBO-12\", 5.0) ->", format_record(("Петров Пётр", "IKBO-12", 5.0)))
 print("(\" сидорова анна сергеевна \", \"ABB-01\", 3.999) ->", format_record((" сидорова анна сергеевна ", "ABB-01", 3.999)))
 ```
-![](images\lab02\ex03.l2.jpg)
+![](images/lab02/ex03.l2.jpg)
