@@ -1,8 +1,10 @@
 # Лабораторная работа 1
 ### Задание 1 
+```python
 name = input("Имя: ")  
 age = int(input("Возраст:"))  
-print("Привет, "+ (name) +"! Через год тебе будет " + str(age + 1)+".")  
+print("Привет, "+ (name) +"! Через год тебе будет " + str(age + 1)+".") 
+``` 
 ![](images/lab01/ex01.jpg)  
 ### Задание 2
 def parse_number(s):  
@@ -35,11 +37,11 @@ minutes=m%60
 print(str(hours) +':' + str(minutes))  
 ![](images/lab01/ex04.jpg)  
 ### Задание 5
-fio=str(input('ФИО: '))    
-name=fio.split()  
-initials=[word[0].upper() for word in name]  
-print('Инициалы:',''.join(initials)+'.')  
-print('Длина символов: ',len(' '.join(name)))    
-![](images/lab01/ex05.jpg)     
+ fio=str(input('ФИО: '))    
+name=fio.split()    
+initials=[word[0].upper() for word in name]    
+print('Инициалы: ',''.join(initials)+'.')    
+print('Длина (символов): ',len(' '.join(name)))    
+![](images/lab01/ex05.jpg)      
 
 
