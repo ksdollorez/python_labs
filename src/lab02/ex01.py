@@ -1,6 +1,6 @@
 #1
 def min_max(nums: list[float | int]) -> tuple[float | int, float | int]:   
-    if  len(nums)==0:   
+    if  len(nums)==0:   #проверяем, не пустой ли список
         raise ValueError  
     else:  
         return min(nums), max(nums)
@@ -8,14 +8,14 @@ print(f"min_max\n[3, -1, 5, 5, 0] -> {min_max([3, -1, 5, 5, 0])}\n[42] -> {min_m
 #print(f"[] -> {min_max([])}")
 #2
 def unique_sorted(nums: list[float | int]) -> list[float | int]:  
-    return sorted(set(nums))  
+    return sorted(set(nums))  #превращаем список в множество (автоматически убирает повторы) и сортируем по возрастанию
 print(f"unique_sorted\n[3, 1, 2, 1, 3] -> {unique_sorted([3, 1, 2, 1, 3])}\n[] -> {unique_sorted([])}\n[-1, -1, 0, 2, 2] -> {unique_sorted([-1, -1, 0, 2, 2])}\n[1.0, 1, 2.5, 2.5, 0] -> {unique_sorted([1.0, 1, 2.5, 2.5, 0])}")  
 #3
 def flatten(mat: list[list | tuple]) -> list:  
     result=[]  
-    for object in mat:  
-        for item in object:  
-            if not isinstance(item, (int, float)):
+    for object in mat:  #перебираем внешние списки/кортежи
+        for item in object:  #перебираем элементы внутри
+            if not isinstance(item, (int, float)): #проверяем, число ли элемент
                 return TypeError  
         else:  
             for item in object:  
