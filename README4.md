@@ -65,8 +65,8 @@ if __name__ == "__main__":
     csv_to_json("data/samples/people.csv", "data/out/people_from_csv.json")
 
 ```
-    ![](images/lab05/задание1.1.jpg)
-    ![](images/lab05/задание1.2.jpg)
+![](images/lab05/задание1.1.jpg)
+![](images/lab05/задание1.2.jpg)
 ### Задание В
 ```Python
  import csv
@@ -110,4 +110,4 @@ if __name__ == "__main__":
     Path("data/out").mkdir(parents=True, exist_ok=True)
     csv_to_xlsx("data/samples/people.csv", "data/out/people.xlsx")
  ```
-    ![](images/lab05/задание2.jpg)
+![](images/lab05/задание2.jpg)
