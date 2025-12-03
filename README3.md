@@ -88,7 +88,7 @@ print("Уникальных слов:", len(count_word))
 print("Топ-5:")
 for x,y in top[:5]:
     print(f'{x}:{y}')
-    ```
+```
 ![](images/lab04/l4con.jpg)
  
 
