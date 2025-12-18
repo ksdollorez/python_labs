@@ -1,94 +1,74 @@
-# Лабораторная работа №4
-### Задание A
+# Лабораторная работа №3
+### Задание №1
 ```Python
-import sys
-import os
-
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-sys.path.insert(0, ROOT_DIR)
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import re
+import unicodedata
 
 
-from lib.text import normalize, tokenize, count_freq, top_n
-
-from pathlib import Path
-import csv
-from typing import Iterable, Sequence
-from collections import Counter
-
-
-def read_text(path: str | Path, encoding: str = "utf-8") -> str:
-    p = Path(path)
-    return p.read_text(encoding=encoding)
-
-
-def write_csv(rows: Iterable[Sequence], path: str | Path,
-              header: tuple[str, ...] | None = None) -> None:
-    p = Path(path)
-    rows = list(rows)
-    with p.open("w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        if header is not None:
-            w.writerow(header)
-        for r in rows:
-            w.writerow(r)
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
+    if casefold:
+        text = text.casefold()
+    if yo2e:
+        text = text.replace('ё', 'е').replace('Ё', 'Е')
+    # Заменяем управляющие символы и невидимые символы на пробелы
+    text = ''.join(char if char.isprintable() or char.isspace() else ' ' for char in text)
+    text = re.sub(r'\s+', ' ', text)
+    # Убираем пробелы в начале и конце
+    return text.strip()
+print('normalize')
+print("ПрИвЕт\nМИр\t ->", normalize("ПрИвЕт\nМИр\t"))
+print("\"ёжик, Ёлка\" ->", normalize("ёжик, Ёлка"))
+print("\"Hello\r\nWorld\" ->", normalize("Hello\r\nWorld"))
+print("\"  двойные   пробелы  \" ->", normalize("  двойные   пробелы  "))
 
 
-def frequencies_from_text(text: str) -> dict[str, int]:
-    tokens = tokenize(normalize(text))
-    return Counter(tokens) 
+def tokenize(text: str) -> list[str]:
+    pattern = r'[\w]+(?:-[\w]+)*'
+    tokens = re.findall(pattern, text)
+    return tokens
+print('tokenize')
+print("\"привет мир\" ->", tokenize(("привет мир")))
+print("\"hello,world!!!\" ->", tokenize(("hello,world!!!")))
+print("\"по-настоящему круто\" ->", tokenize(("по-настоящему круто")))
+print("\"2025 год\" ->", tokenize(("2025 год")))
+print("\"emoji 😀 не слово\" ->", tokenize(("emoji 😀 не слово")))
 
+def count_freq(tokens: list[str]) -> dict[str, int]:
+    freq = {}
+    for token in tokens:
+        freq[token] = freq.get(token, 0) + 1
+    return freq
 
-def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
-    return sorted(freq.items(), key=lambda kv: (-kv[1], kv[0]))
-
-
-txt = read_text("data/input.txt") 
-data=[i for i in top_n(count_freq(tokenize(normalize(txt))),n=5)]
-write_csv(
-    header=("word","count"),
-    rows=data,
-    path = "data/check.csv" ,
-)
-
- ```
-![](images/lab04/l42.jpg)
-![](images/lab04/l41.jpg)
- ### Задание В
-```Python
-import sys
-import os
-from pathlib import Path
-
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-sys.path.insert(0, ROOT_DIR)
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-from lib.text import normalize, tokenize, count_freq, top_n
-
-from lab04.io_txt_csv import read_text, write_csv
-
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-
-
-input_path = PROJECT_ROOT / "data" / "input.txt"
-output_path = PROJECT_ROOT / "data" / "report.csv"
-p = read_text(input_path)
-norm_p=normalize(p)
-tokens=tokenize(norm_p)
-count_word=count_freq(tokens)
-top=top_n(count_freq(tokenize(normalize(p))))
-
-write_csv(top, output_path, ["word", "count"])
-
-print("Всего слов:", len(tokens))
-print("Уникальных слов:", len(count_word))
-print("Топ-5:")
-for x,y in top[:5]:
-    print(f'{x}:{y}')
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    # Сортируем сначала по убыванию частоты, затем по возрастанию слова (алфавиту)
+    sorted_items = sorted(freq.items(), key=lambda x: (-x[1], x[0]))
+    return sorted_items[:n]
+print('count_freq + top_n')
+print('["a","b","a","c","b","a"] ->', count_freq((["a","b","a","c","b","a"])))
+print('top_n(..., n=2) ->', top_n(count_freq((["a","b","a","c","b","a"]))))
+print('["bb","aa","bb","aa","cc"] ->', count_freq((["bb","aa","bb","aa","cc"])))
+print('top_n(..., n=2) ->', top_n(count_freq((["bb","aa","bb","aa","cc"]))))
 ```
-![](images/lab04/l4con.jpg)
- 
+![](images/lab03/ex01.l3.jpg)
+
+### Задание №2
+``` Python
+from text import normalize, tokenize, count_freq, top_n
+
+def text_stats(text: str):
+    norm = normalize(text)
+    tokens = tokenize(norm)
+    freq = count_freq(tokens)
+    
+    print(f'Всего слов: {len(tokens)}')
+    print(f'Уникальных слов: {len(freq)}')
+    print('Топ-5:')
+    
+    top = top_n(freq, 5)  # Предполагается, что top_n принимает второй параметр - количество
+    for key, value in top:
+        print(f"{key}: {value}")
+print('Привет, мир! Привет!!!')
+text_stats('Привет, мир! Привет!!!')
+```
+![](images/lab03/ex02.l3.jpg)
 

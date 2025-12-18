@@ -3,15 +3,18 @@ from pathlib import Path
 import re
 from collections import Counter
 
+
 def normalize(text):
     """Нормализация текста"""
     text = text.lower()
-    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r"\s+", " ", text)
     return text.strip()
+
 
 def tokenize(text):
     """Разделение на слова"""
-    return re.findall(r'\b[a-zа-яё0-9]+\b', text, re.IGNORECASE)
+    return re.findall(r"\b[a-zа-яё0-9]+\b", text, re.IGNORECASE)
+
 
 def count_freq(words):
     """Подсчет частоты"""
@@ -19,6 +22,7 @@ def count_freq(words):
     for word in words:
         freq[word] = freq.get(word, 0) + 1
     return freq
+
 
 def top_n(freq, n=5):
     """Топ N слов"""
@@ -30,7 +34,9 @@ def main():
     # создание объекта парсера с описанием программы
     parser = argparse.ArgumentParser(description="CLI-утилиты лабораторной №6")
 
-    subparsers = parser.add_subparsers(dest="command", help="Доступные команды", required=True)
+    subparsers = parser.add_subparsers(
+        dest="command", help="Доступные команды", required=True
+    )
 
     # Сначала создаем парсер для stats
     stats_parser = subparsers.add_parser("stats", help="Частоты слов в тексте")
@@ -41,7 +47,7 @@ def main():
         default=5,
         help="Количество топовых слов (по умолчанию: 5)",
     )
-    
+
     # Затем создаем парсер для cat
     cat_parser = subparsers.add_parser("cat", help="Вывод содержимого файла")
     cat_parser.add_argument("--input", required=True, help="Путь к входному файлу")
@@ -54,7 +60,7 @@ def main():
         file = Path(args.input)
         if not file.exists():
             parser.error(f"Файл '{args.input}' не найден")
-        
+
         # реализация команды cat
         with open(file, "r", encoding="utf-8") as f:
             number = 1
@@ -70,11 +76,11 @@ def main():
         file = Path(args.input)
         if not file.exists():
             parser.error(f"Файл '{args.input}' не найден")
-        
+
         # реализация команды stats
         with open(file, "r", encoding="utf-8") as f:
             data = f.read()
-        
+
         # Нормализуем текст
         normalized = normalize(data)
         # Токенизируем

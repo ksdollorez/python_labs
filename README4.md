@@ -1,113 +1,94 @@
-# Лабораторная работа №5
+# Лабораторная работа №4
 ### Задание A
 ```Python
-import json
+import sys
+import os
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, ROOT_DIR)
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+
+from lib.text import normalize, tokenize, count_freq, top_n
+
+from pathlib import Path
 import csv
-from pathlib import Path
+from typing import Iterable, Sequence
+from collections import Counter
 
-def json_to_csv(json_path: str, csv_path: str) -> None:
-    if Path(json_path).is_absolute():
-        raise ValueError("путь к JSON должен быть относительным")
-    if Path(csv_path).is_absolute():
-        raise ValueError("путь к CSV должен быть относительным")
-    
-    if not json_path.lower().endswith('.json'):
-        raise ValueError("нэ JSON")
-    if not csv_path.lower().endswith('.csv'):
-        raise ValueError("нэ CSV")
-    
-    if not Path(json_path).exists():
-        raise FileNotFoundError(f"файл не найден: {json_path}")
-    
-    with open(json_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    if not data:
-        raise ValueError("пустой JSON")
-    if not isinstance(data, list):
-        raise ValueError("JSON должен быть списком")
-    if not all(isinstance(item, dict) for item in data):
-        raise ValueError("все элементы должны быть словарями")
-    
-    fields = sorted(data[0].keys())
-    
-    Path(csv_path).parent.mkdir(parents=True, exist_ok=True)
-    with open(csv_path, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=fields)
-        writer.writeheader()
-        for row in data:
-            complete_row = {field: str(row.get(field, '')) for field in fields}
-            writer.writerow(complete_row)
 
-def csv_to_json(csv_path: str, json_path: str) -> None:
-    if not csv_path.lower().endswith('.csv'):
-        raise ValueError("нэ CSV")
-    if not json_path.lower().endswith('.json'):
-        raise ValueError("нэ JSON")
-    
-    if not Path(csv_path).exists():
-        raise FileNotFoundError(f"файл не найден: {csv_path}")
-    
-    with open(csv_path, 'r', encoding='utf-8') as f:
-        data = list(csv.DictReader(f))
-    
-    if not data:
-        raise ValueError("пустой CSV")
-    
-    Path(json_path).parent.mkdir(parents=True, exist_ok=True)
-    with open(json_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+def read_text(path: str | Path, encoding: str = "utf-8") -> str:
+    p = Path(path)
+    return p.read_text(encoding=encoding)
 
-if __name__ == "__main__":
-    Path("data/out").mkdir(parents=True, exist_ok=True)
-    
-    json_to_csv("data/samples/people.json", "data/out/people_from_json.csv")
-    csv_to_json("data/samples/people.csv", "data/out/people_from_csv.json")
 
-```
-![](images/lab05/задание1.1.jpg)
-![](images/lab05/задание1.2.jpg)
-### Задание В
-```Python
- import csv
-from pathlib import Path
-from openpyxl import Workbook
-from openpyxl.utils import get_column_letter
+def write_csv(rows: Iterable[Sequence], path: str | Path,
+              header: tuple[str, ...] | None = None) -> None:
+    p = Path(path)
+    rows = list(rows)
+    with p.open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        if header is not None:
+            w.writerow(header)
+        for r in rows:
+            w.writerow(r)
 
-def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
-    if Path(csv_path).is_absolute() or Path(xlsx_path).is_absolute():
-        raise ValueError("пути должны быть относительными")
-    if not csv_path.endswith('.csv') or not xlsx_path.endswith('.xlsx'):
-        raise ValueError("неверные расширения файлов")
-    if not Path(csv_path).exists():
-        raise FileNotFoundError(f"файл не найден: {csv_path}")
-    
-    with open(csv_path, "r", encoding="utf-8") as f:
-        rows = list(csv.reader(f))
-    
-    if not rows or not any(rows[0]):
-        raise ValueError("пустой CSV или нет заголовка")
-    
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Sheet1"
-    
-    max_lengths = []
-    for row in rows:
-        ws.append(row)
-        for i, value in enumerate(row):
-            if i >= len(max_lengths):
-                max_lengths.append(0)
-            max_lengths[i] = max(max_lengths[i], len(str(value or "")))
-    
-    for i, length in enumerate(max_lengths, 1):
-        ws.column_dimensions[get_column_letter(i)].width = max(length + 2, 8)
-    
-    Path(xlsx_path).parent.mkdir(parents=True, exist_ok=True)
-    wb.save(xlsx_path)
 
-if __name__ == "__main__":
-    Path("data/out").mkdir(parents=True, exist_ok=True)
-    csv_to_xlsx("data/samples/people.csv", "data/out/people.xlsx")
+def frequencies_from_text(text: str) -> dict[str, int]:
+    tokens = tokenize(normalize(text))
+    return Counter(tokens) 
+
+
+def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
+    return sorted(freq.items(), key=lambda kv: (-kv[1], kv[0]))
+
+
+txt = read_text("data/input.txt") 
+data=[i for i in top_n(count_freq(tokenize(normalize(txt))),n=5)]
+write_csv(
+    header=("word","count"),
+    rows=data,
+    path = "data/check.csv" ,
+)
+
  ```
-![](images/lab05/задание2.jpg)
+![](images/lab04/l42.jpg)
+![](images/lab04/l41.jpg)
+ ### Задание В
+```Python
+import sys
+import os
+from pathlib import Path
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, ROOT_DIR)
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from lib.text import normalize, tokenize, count_freq, top_n
+
+from lab04.io_txt_csv import read_text, write_csv
+
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+
+
+input_path = PROJECT_ROOT / "data" / "input.txt"
+output_path = PROJECT_ROOT / "data" / "report.csv"
+p = read_text(input_path)
+norm_p=normalize(p)
+tokens=tokenize(norm_p)
+count_word=count_freq(tokens)
+top=top_n(count_freq(tokenize(normalize(p))))
+
+write_csv(top, output_path, ["word", "count"])
+
+print("Всего слов:", len(tokens))
+print("Уникальных слов:", len(count_word))
+print("Топ-5:")
+for x,y in top[:5]:
+    print(f'{x}:{y}')
+```
+![](images/lab04/l4con.jpg)
+ 
+

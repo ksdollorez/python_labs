@@ -1,74 +1,96 @@
-# Лабораторная работа №3
+# Лабораторная работа №2
 ### Задание №1
 ```Python
-import re
-import unicodedata
+
+def min_max(nums: list[float | int]) -> tuple[float | int, float | int]:   
+    if  len(nums)==0:   
+        raise ValueError  
+    else:  
+        return min(nums), max(nums)  
+#print(f"min_max\n[3, -1, 5, 5, 0] -> {min_max([3, -1, 5, 5, 0])}\n[42] -> {min_max([42])}\n[-5, -2, -9] -> {min_max([-5, -2, -9])}\n[1.5, 2, 2.0, -3.1] -> {min_max([1.5, 2, 2.0, -3.1])}\n")  
+#print(f"[] -> {min_max([])}")    
 
 
-def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
-    if casefold:
-        text = text.casefold()
-    if yo2e:
-        text = text.replace('ё', 'е').replace('Ё', 'Е')
-    # Заменяем управляющие символы и невидимые символы на пробелы
-    text = ''.join(char if char.isprintable() or char.isspace() else ' ' for char in text)
-    text = re.sub(r'\s+', ' ', text)
-    # Убираем пробелы в начале и конце
-    return text.strip()
-print('normalize')
-print("ПрИвЕт\nМИр\t ->", normalize("ПрИвЕт\nМИр\t"))
-print("\"ёжик, Ёлка\" ->", normalize("ёжик, Ёлка"))
-print("\"Hello\r\nWorld\" ->", normalize("Hello\r\nWorld"))
-print("\"  двойные   пробелы  \" ->", normalize("  двойные   пробелы  "))
+def unique_sorted(nums: list[float | int]) -> list[float | int]:  
+    return sorted(set(nums))  
+print(f"unique_sorted\n[3, 1, 2, 1, 3] -> {unique_sorted([3, 1, 2, 1, 3])}\n[] -> {unique_sorted([])}\n[-1, -1, 0, 2, 2] -> {unique_sorted([-1, -1, 0, 2, 2])}\n[1.0, 1, 2.5, 2.5, 0] -> {unique_sorted([1.0, 1, 2.5, 2.5, 0])}")  
 
 
-def tokenize(text: str) -> list[str]:
-    pattern = r'[\w]+(?:-[\w]+)*'
-    tokens = re.findall(pattern, text)
-    return tokens
-print('tokenize')
-print("\"привет мир\" ->", tokenize(("привет мир")))
-print("\"hello,world!!!\" ->", tokenize(("hello,world!!!")))
-print("\"по-настоящему круто\" ->", tokenize(("по-настоящему круто")))
-print("\"2025 год\" ->", tokenize(("2025 год")))
-print("\"emoji 😀 не слово\" ->", tokenize(("emoji 😀 не слово")))
-
-def count_freq(tokens: list[str]) -> dict[str, int]:
-    freq = {}
-    for token in tokens:
-        freq[token] = freq.get(token, 0) + 1
-    return freq
-
-def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
-    # Сортируем сначала по убыванию частоты, затем по возрастанию слова (алфавиту)
-    sorted_items = sorted(freq.items(), key=lambda x: (-x[1], x[0]))
-    return sorted_items[:n]
-print('count_freq + top_n')
-print('["a","b","a","c","b","a"] ->', count_freq((["a","b","a","c","b","a"])))
-print('top_n(..., n=2) ->', top_n(count_freq((["a","b","a","c","b","a"]))))
-print('["bb","aa","bb","aa","cc"] ->', count_freq((["bb","aa","bb","aa","cc"])))
-print('top_n(..., n=2) ->', top_n(count_freq((["bb","aa","bb","aa","cc"]))))
-```
-![](images/lab03/ex01.l3.jpg)
-
+def flatten(mat: list[list | tuple]) -> list:  
+    result=[]  
+    for object in mat:  
+        for item in object:  
+            if type(item) is not int or not float: 
+                raise TypeError  
+        else:  
+            for item in object:  
+                result.append(item)  
+    return result  
+print(f"flatten\n[[1, 2], [3, 4]] -> {flatten([[1, 2], [3, 4]])}\n[[1, 2], (3, 4, 5)] -> {flatten([[1, 2], (3, 4, 5)])}\n[[1], [], [2, 3]] -> {flatten([[1], [], [2, 3]])}\n[[[1, 2], 'ab']] -> {flatten([[[1, 2], 'ab']])}")
+```  
+![](images\lab02\ex01.l2.jpg)
 ### Задание №2
-``` Python
-from text import normalize, tokenize, count_freq, top_n
+```Python
 
-def text_stats(text: str):
-    norm = normalize(text)
-    tokens = tokenize(norm)
-    freq = count_freq(tokens)
-    
-    print(f'Всего слов: {len(tokens)}')
-    print(f'Уникальных слов: {len(freq)}')
-    print('Топ-5:')
-    
-    top = top_n(freq, 5)  # Предполагается, что top_n принимает второй параметр - количество
-    for key, value in top:
-        print(f"{key}: {value}")
-print('Привет, мир! Привет!!!')
-text_stats('Привет, мир! Привет!!!')
+def transpose(mat: list[list[float | int]]) -> list[list[float | int]]:  
+    if not mat:  
+        return []  
+    row_len = len(mat[0])  
+    if any(len(row) != row_len for row in mat):  
+        raise ValueError("Рваная матрица")  
+    return [[mat[i][j] for i in range(len(mat))] for j in range(row_len)]  
+print(f"transpose\n[[1, 2, 3]] -> {transpose([[1, 2, 3]])}\n[[1], [2], [3]] -> {transpose([[1], [2], [3]])}\n[[1, 2], [3, 4]] -> {transpose([[1, 2], [3, 4]])}\n[] -> {transpose([])}")  
+#print(f"[[1, 2], [3]] -> {transpose([[1, 2], [3]])}")  
+
+
+def row_sums(mat: list[list[float | int]]) -> list[float]:  
+    if not mat:  
+        return []  
+    row_len = len(mat[0])  
+    if any(len(row) != row_len for row in mat):  
+        raise ValueError("Рваная матрица")  
+    return [sum(row) for row in mat]  
+print(f"row_sums\n[[1, 2, 3], [4, 5, 6]] -> {row_sums([[1, 2, 3], [4, 5, 6]])}\n[[-1, 1], [10, -10]] -> {row_sums([[-1, 1], [10, -10]])}\n[[0, 0], [0, 0]] -> {row_sums([[0, 0], [0, 0]])}")  
+#print(f"[[1, 2], [3]] -> {row_sums([[1, 2], [3]])}")  
+
+
+def col_sums(mat: list[list[float | int]]) -> list[float]:  
+    if not mat:  
+        return []  
+    row_len = len(mat[0])  
+    if any(len(row) != row_len for row in mat):  
+        raise ValueError("Рваная матрица")  
+    return [sum(mat[i][j] for i in range(len(mat))) for j in range(row_len)]  
+print(f"col_sums\n[[1, 2, 3], [4, 5, 6]] -> {col_sums([[1, 2, 3], [4, 5, 6]])}\n[[-1, 1], [10, -10]] -> {col_sums([[-1, 1], [10, -10]])}\n[[0, 0], [0, 0]] -> {col_sums([[0, 0], [0, 0]])}")  
+print(f"[[1, 2], [3]] -> {col_sums([[1, 2], [3]])}")  
 ```
-![](images/lab03/ex02.l3.jpg)
+![](images\lab02\ex02.l2.jpg)
+### Задание №3
+```Python
 
+def format_record(rec: tuple[str, str, float]) -> str:
+    if not isinstance(rec, tuple):
+        return TypeError
+    if len(rec)!=3:
+        raise ValueError
+    if type(rec[2]) is not float:
+        raise TypeError
+    if len(rec[1])==0:
+        raise ValueError
+    if not isinstance(rec[0], str):
+        return TypeError
+    name_parts=rec[0].strip().split()
+    if len(name_parts)==3:
+        n1, n2, n3 = name_parts
+        return f"{n1.capitalize()} {n2[0].upper()}.{n3[0].upper()}., гр. {rec[1].upper()}, GPA {rec[2]:.2f}"
+    elif len(name_parts)==2:
+        n1, n2 = name_parts
+        return f"{n1.capitalize()} {n2[0].upper()}., гр. {rec[1].upper()}, GPA {rec[2]:.2f}"
+    else:
+        raise ValueError
+print('tuples')
+print("(\"Иванов Иван Иванович\", \"BIVT-25\", 4.6) ->", format_record(("Иванов Иван Иванович", "BIVT-25", 4.6)))
+print("(\"Петров Пётр\", \"IKBO-12\", 5.0) ->", format_record(("Петров Пётр", "IKBO-12", 5.0)))
+print("(\" сидорова анна сергеевна \", \"ABB-01\", 3.999) ->", format_record((" сидорова анна сергеевна ", "ABB-01", 3.999)))
+```
+![](images\lab02\ex03.l2.jpg)

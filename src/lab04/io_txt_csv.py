@@ -1,10 +1,10 @@
 import sys
 import os
 
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, ROOT_DIR)
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 
 from lib.text import normalize, tokenize, count_freq, top_n
@@ -20,8 +20,9 @@ def read_text(path: str | Path, encoding: str = "utf-8") -> str:
     return p.read_text(encoding=encoding)
 
 
-def write_csv(rows: Iterable[Sequence], path: str | Path,
-              header: tuple[str, ...] | None = None) -> None:
+def write_csv(
+    rows: Iterable[Sequence], path: str | Path, header: tuple[str, ...] | None = None
+) -> None:
     p = Path(path)
     rows = list(rows)
     with p.open("w", newline="", encoding="utf-8") as f:
@@ -34,17 +35,17 @@ def write_csv(rows: Iterable[Sequence], path: str | Path,
 
 def frequencies_from_text(text: str) -> dict[str, int]:
     tokens = tokenize(normalize(text))
-    return Counter(tokens) 
+    return Counter(tokens)
 
 
 def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
     return sorted(freq.items(), key=lambda kv: (-kv[1], kv[0]))
 
 
-txt = read_text("data/input.txt") 
-data=[i for i in top_n(count_freq(tokenize(normalize(txt))),n=5)]
+txt = read_text("data/input.txt")
+data = [i for i in top_n(count_freq(tokenize(normalize(txt))), n=5)]
 write_csv(
-    header=("word","count"),
+    header=("word", "count"),
     rows=data,
-    path = "data/check.csv" ,
+    path="data/check.csv",
 )
